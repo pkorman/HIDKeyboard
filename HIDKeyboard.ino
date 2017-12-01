@@ -38,7 +38,7 @@ Bounce encoderLeftSW = Bounce();
 Encoder knobLeft(ENCODER_L0, ENCODER_L1);
 Encoder knobRight(ENCODER_R1, ENCODER_R0);
 
-byte rowPin[4] = {9, 10, 11, 12};
+byte rowPin[4] = {9, 10, 16, 14}; //banggood Arduino mini Leonardo
 byte colPin[4] = {A0, A1, A2, A3};
 
 char keys[4][4] = {
@@ -76,7 +76,7 @@ void loop()
     Serial.println(key);
   }
 
-  // Read Encoder Switches ... cita to cez piny ale ja to chem cez Bounce2
+  // Read Encoder Switches using Bounce2 lib
   if (encoderRightSW.read() == LOW) {
     Serial.println("encoderRightSW");
   }
