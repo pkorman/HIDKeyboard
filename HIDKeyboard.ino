@@ -29,7 +29,7 @@
 #define ENCODER_R0  2
 #define ENCODER_R1  3
 
-#define BUTTON_ENCODER_L_SW  8
+#define BUTTON_ENCODER_L_SW  5
 #define BUTTON_ENCODER_R_SW  4
 
 Bounce encoderRightSW = Bounce();
@@ -38,8 +38,8 @@ Bounce encoderLeftSW = Bounce();
 Encoder knobLeft(ENCODER_L0, ENCODER_L1);
 Encoder knobRight(ENCODER_R1, ENCODER_R0);
 
-byte rowPin[4] = {9, 10, 16, 14}; //banggood Arduino mini Leonardo
-byte colPin[4] = {A0, A1, A2, A3};
+byte rowPin[4] = {8, 14, 16, 10}; //banggood Arduino mini Leonardo
+byte colPin[4] = {A2, A1, A0, 15};
 
 char keys[4][4] = {
   {'1', '2', '3', 'A'},
@@ -77,9 +77,13 @@ void loop()
   }
 
   // Read Encoder Switches using Bounce2 lib
-  if (encoderRightSW.read() == LOW) {
+  encoderRightSW.update();
+  int rightSW = encoderRightSW.read();
+  if (rightSW == LOW) {
     Serial.println("encoderRightSW");
   }
+  encoderLeftSW.update();
+  //int leftSW = encoderLeftSW.read();
   if (encoderLeftSW.read() == LOW) {
     Serial.println("encoderLeftSW");
   }
