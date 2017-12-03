@@ -23,11 +23,11 @@
 
 #define HEARTBEAT_PIN 13
 
-#define ENCODER_L0  6
-#define ENCODER_L1  7
+#define ENCODER_L0  7
+#define ENCODER_L1  6
 
-#define ENCODER_R0  2
-#define ENCODER_R1  3
+#define ENCODER_R0  3
+#define ENCODER_R1  2
 
 #define BUTTON_ENCODER_L_SW  5
 #define BUTTON_ENCODER_R_SW  4
@@ -58,11 +58,11 @@ void setup()
 
   pinMode(BUTTON_ENCODER_R_SW, INPUT_PULLUP);
   encoderRightSW.attach(BUTTON_ENCODER_R_SW);
-  encoderRightSW.interval(5); // interval in ms
+  encoderRightSW.interval(10); // interval in ms
 
   pinMode(BUTTON_ENCODER_L_SW, INPUT_PULLUP);
   encoderLeftSW.attach(BUTTON_ENCODER_L_SW);
-  encoderLeftSW.interval(5); // interval in ms
+  encoderLeftSW.interval(10); // interval in ms
 
   // initialize digital pin 13 as an output. heartbeat HEARTBEAT_PIN
   pinMode(HEARTBEAT_PIN, OUTPUT);
