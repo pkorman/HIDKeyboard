@@ -14,14 +14,16 @@
   http://forum.arduino.cc/index.php?topic=8558.0
   http://www.instructables.com/id/Connecting-a-4-x-4-Membrane-Keypad-to-an-Arduino/
 
+  Resources:
+  HID-Project.h (https://github.com/NicoHood/HID)
+  Encoder.h (https://www.pjrc.com/teensy/td_libs_Encoder.html)
 */
 
-#include <Keypad.h>
-#include <Encoder.h>
-//Bounce2 https://github.com/thomasfredericks/Bounce2
-#include <Bounce2.h>
-
-#define HEARTBEAT_PIN 13
+#include <Keypad.h> //
+#include <Encoder.h> //https://github.com/PaulStoffregen/Encoder
+#include <Bounce2.h> //Bounce2 https://github.com/thomasfredericks/Bounce2
+#include <HID-Project.h>
+#include <HID-Settings.h>
 
 #define ENCODER_L0  7
 #define ENCODER_L1  6
@@ -50,7 +52,7 @@ char keys[4][4] = {
 
 Keypad keypad = Keypad(makeKeymap(keys), rowPin, colPin, 4, 4);
 
-long heartbeatTime;
+long play_pause_time;
 
 void setup()
 {
@@ -64,8 +66,8 @@ void setup()
   encoderLeftSW.attach(BUTTON_ENCODER_L_SW);
   encoderLeftSW.interval(10); // interval in ms
 
-  // initialize digital pin 13 as an output. heartbeat HEARTBEAT_PIN
-  pinMode(HEARTBEAT_PIN, OUTPUT);
+  Consumer.begin();
+  Keyboard.begin();
 }
 
 void loop()
@@ -78,14 +80,14 @@ void loop()
 
   // Read Encoder Switches using Bounce2 lib
   encoderRightSW.update();
-  int rightSW = encoderRightSW.read();
-  if (rightSW == LOW) {
+  if (encoderRightSW.read() == LOW) {
     Serial.println("encoderRightSW");
   }
   encoderLeftSW.update();
-  //int leftSW = encoderLeftSW.read();
-  if (encoderLeftSW.read() == LOW) {
+  if ((encoderLeftSW.read() == LOW) && (millis() > play_pause_time + 333)) {
     Serial.println("encoderLeftSW");
+    Keyboard.write(KEY_UP_ARROW);
+    play_pause_time = millis();
   }
 
   // Read Encoders
@@ -94,32 +96,31 @@ void loop()
   rightValue = knobRight.read();
 
   // Left Encoder
-  if (leftValue > 3)
+  if (leftValue > 1)
   {
     Serial.println("Left Encoder Up");
     knobLeft.write(0);
+    Keyboard.write(KEY_RIGHT_ARROW);
   }
-  else if (leftValue < -3)
+  else if (leftValue < -1)
   {
     Serial.println("Left Encoder Down");
     knobLeft.write(0);
+    Keyboard.write(KEY_LEFT_ARROW);
   }
 
   // Right Encoder
-  if (rightValue > 3)
+  if (rightValue > 2)
   {
     Serial.println("Right Encoder Up");
     knobRight.write(0);
+    Keyboard.print("=");
   }
-  else if (rightValue < -3)
+  else if (rightValue < -2)
   {
     Serial.println("Right Encoder Down");
     knobRight.write(0);
-  }
-
-  if (millis() > heartbeatTime + 125) {
-    heartbeatTime = millis();
-    digitalWrite(HEARTBEAT_PIN, !digitalRead(HEARTBEAT_PIN));
+    Keyboard.print("-");
   }
 
 }
