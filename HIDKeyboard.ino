@@ -53,6 +53,10 @@ char keys[4][4] = {
 Keypad keypad = Keypad(makeKeymap(keys), rowPin, colPin, 4, 4);
 
 long play_pause_time;
+long marker_time;
+
+boolean rewind_active = false;
+boolean fast_forward_active = false;
 
 void setup()
 {
@@ -76,19 +80,123 @@ void loop()
 
   if (key != NO_KEY) {
     Serial.println(key);
+
+    //keyboard row1
+    if (key == '1') {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.write(KEY_LEFT_ARROW);
+      delay(100);
+      Keyboard.releaseAll();
+    }
+    if (key == '2') {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.write(KEY_RIGHT_ARROW);
+      delay(100);
+      Keyboard.releaseAll();
+    }
+    if (key == '3') {
+      Keyboard.print("-");
+    }
+    if (key == 'A') {
+      Keyboard.print("=");
+    }
+
+    //keyboard row2
+    if (key == '4') {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.print("l");
+      delay(100);
+      Keyboard.releaseAll();
+    }
+    if (key == '5') {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.print("k");
+      delay(100);
+      Keyboard.releaseAll();
+    }
+    if (key == '6') {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.print("j");
+      delay(100);
+      Keyboard.releaseAll();
+    }
+    if (key == 'B') {
+      Keyboard.write(KEY_DELETE);
+    }
+
+    //keyboard row3
+    if (key == '7') {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.print("g");
+      delay(100);
+      Keyboard.releaseAll();
+    }
+    if (key == '8') {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.print("i");
+      delay(100);
+      Keyboard.releaseAll();
+    }
+    if (key == '9') {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.print("t");
+      delay(100);
+      Keyboard.releaseAll();
+    }
+    if (key == 'C') {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.print("y");
+      delay(100);
+      Keyboard.releaseAll();
+    }
+
+    //keyboard row4
+    if (key == '*') {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.print("s");
+      delay(100);
+      Keyboard.releaseAll();
+    }
+    if (key == '0') {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.print("c");
+      delay(100);
+      Keyboard.releaseAll();
+    }
+    if (key == '#') {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.print("v");
+      delay(100);
+      Keyboard.releaseAll();
+    }
+    if (key == 'D') {
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.print("z");
+      delay(100);
+      Keyboard.releaseAll();
+    }
+
   }
 
   // Read Encoder Switches using Bounce2 lib
-  encoderRightSW.update();
-  if (encoderRightSW.read() == LOW) {
-    Serial.println("encoderRightSW");
-  }
   encoderLeftSW.update();
-  if ((encoderLeftSW.read() == LOW) && (millis() > play_pause_time + 333)) {
+  if ((encoderLeftSW.read() == LOW) && (millis() > marker_time + 333)) {
     Serial.println("encoderLeftSW");
-    Keyboard.write(KEY_UP_ARROW);
-    play_pause_time = millis();
+
+    Keyboard.press(KEY_LEFT_CTRL);
+    Keyboard.print("m");
+    delay(100);
+    Keyboard.releaseAll();
+    marker_time = millis();
   }
+  
+  encoderRightSW.update();
+  if ((encoderRightSW.read() == LOW) && (millis() > play_pause_time + 333)) {
+    Serial.println("encoderRightSW");
+    Keyboard.write(KEY_UP_ARROW);
+    play_pause_time = millis();    
+  }
+
 
   // Read Encoders
   char leftValue = 0, rightValue = 0;
@@ -110,17 +218,31 @@ void loop()
   }
 
   // Right Encoder
-  if (rightValue > 2)
+  if (rightValue > 1)
   {
     Serial.println("Right Encoder Up");
+    if (rewind_active) {
+      Keyboard.write(KEY_RIGHT_ARROW);
+      fast_forward_active = false;
+      rewind_active = false;
+    } else {
     knobRight.write(0);
-    Keyboard.print("=");
+    Keyboard.print("l");
+      fast_forward_active = true;      
+    }
   }
-  else if (rightValue < -2)
+  else if (rightValue < -1)
   {
     Serial.println("Right Encoder Down");
-    knobRight.write(0);
-    Keyboard.print("-");
+    if (fast_forward_active) {
+      Keyboard.write(KEY_LEFT_ARROW);
+      fast_forward_active = false;
+      rewind_active = false;
+    } else {
+      knobRight.write(0);
+      Keyboard.print("j");
+      rewind_active = true;      
+    }
   }
 
 }
