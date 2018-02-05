@@ -104,7 +104,7 @@ void loop()
     //keyboard row2
     if (key == '4') {
       Keyboard.press(KEY_LEFT_CTRL);
-      Keyboard.print("l");
+      Keyboard.print("j");
       delay(100);
       Keyboard.releaseAll();
     }
@@ -116,7 +116,7 @@ void loop()
     }
     if (key == '6') {
       Keyboard.press(KEY_LEFT_CTRL);
-      Keyboard.print("j");
+      Keyboard.print("l");
       delay(100);
       Keyboard.releaseAll();
     }
@@ -221,25 +221,25 @@ void loop()
   if (rightValue > 1)
   {
     Serial.println("Right Encoder Up");
+    knobRight.write(0);
     if (rewind_active) {
       Keyboard.write(KEY_RIGHT_ARROW);
       fast_forward_active = false;
       rewind_active = false;
     } else {
-    knobRight.write(0);
-    Keyboard.print("l");
+      Keyboard.print("l");
       fast_forward_active = true;      
     }
   }
   else if (rightValue < -1)
   {
     Serial.println("Right Encoder Down");
+    knobRight.write(0);
     if (fast_forward_active) {
       Keyboard.write(KEY_LEFT_ARROW);
       fast_forward_active = false;
       rewind_active = false;
     } else {
-      knobRight.write(0);
       Keyboard.print("j");
       rewind_active = true;      
     }
